@@ -1,4 +1,5 @@
 import torch.nn as nn
+import numpy as np
 
 
 class Down(nn.Module):
@@ -9,12 +10,8 @@ class Down(nn.Module):
     def __init__(self, channels_in, channels_out, LR):
         super(Down, self).__init__()
         self.downsample = nn.Sequential(
-<<<<<<< HEAD
-            nn.Conv2d(channels_in, channels_in, 3, padding="same"),
-=======
             # Padding yet to figure out
             nn.Conv2d(channels_in, channels_out, 3, padding=(1, 1)),
->>>>>>> 86a05ef4e4cebe41ca98d9b3443742d354eb0d1c
             nn.MaxPool2d((2, 2)),
             nn.BatchNorm2d(channels_out),
             nn.LeakyReLU(negative_slope=LR),
@@ -29,13 +26,8 @@ class Down(nn.Module):
 
 
 class Up(nn.Module):
-<<<<<<< HEAD
-    '''Class representing 1 segment of downsampling process. It consists of 2 conv layers with ReLu activations
-    followed by maxed pooling layer, which leads to the next such segement. Implemented as a sequential
-=======
     '''Class representing 1 segment of upsampling process. It consists of 2 conv layers with LeakyReLu activations
     followed by upsampling layer, which leads to the next such segement. Implemented as a sequential
->>>>>>> 86a05ef4e4cebe41ca98d9b3443742d354eb0d1c
     container added to UNet. (Things like dropout to add later)'''
 
     def __init__(self, channels_in, channels_out, kernel_size, LR):
@@ -43,21 +35,6 @@ class Up(nn.Module):
         self.upsample = nn.Sequential(
             nn.BatchNorm2d(channels_in),
 
-<<<<<<< HEAD
-            nn.Conv2d(channels_in, channels_in, kernel_size, padding_mode='reflect'),
-            nn.BatchNorm2d(channels_in),
-            nn.LeakyReLU(negative_slope=LR),
-
-            nn.Conv2d(channels_in, channels_in, kernel_size, padding_mode='reflect'),
-            nn.BatchNorm2d(channels_in),
-            nn.LeakyReLU(negative_slope=LR),
-
-            nn.Upsample(channels_out, mode="bilinear")
-        )
-
-    def forward(self, x):
-        return self.upsample
-=======
             # Padding yet to figure out
             nn.Conv2d(channels_in, channels_out, kernel_size, padding=(2, 2)),
             nn.BatchNorm2d(channels_out),
@@ -78,8 +55,18 @@ class Up(nn.Module):
             # Version with no skip connections
             x = self.upsample(x)
         return x
->>>>>>> 86a05ef4e4cebe41ca98d9b3443742d354eb0d1c
 
 #TODO Possibly
 class Skip(nn.Module):
     ...
+
+def z(shape, t='random'):
+    if t=='random':
+        return 0.1 * np.random.random((1,1) + shape)
+    if t=='meshgrid':
+        result = np.zeros((1,2) + shape)
+        result[0, 0, :, :], result[0, 1, :, :] = np.meshgrid(
+            np.linspace(0,1,shape[0]),
+            np.linspace(0,1,shape[1])
+        )
+        return result
