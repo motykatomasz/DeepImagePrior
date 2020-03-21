@@ -60,9 +60,9 @@ class Up(nn.Module):
 class Skip(nn.Module):
     ...
 
-def z(shape, t='random'):
+def z(shape, t='random', channels=1):
     if t=='random':
-        return 0.1 * np.random.random((1,1) + shape)
+        return 0.1 * np.random.random((1,channels) + shape)
     if t=='meshgrid':
         result = np.zeros((1,2) + shape)
         result[0, 0, :, :], result[0, 1, :, :] = np.meshgrid(
