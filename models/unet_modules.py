@@ -1,5 +1,6 @@
+import torch
 import torch.nn as nn
-import numpy as np
+from models.utils import get_padding_by_kernel
 
 
 class Down(nn.Module):
@@ -7,16 +8,15 @@ class Down(nn.Module):
     followed by maxed pooling layer, which leads to the next such segement. Implemented as a sequential
     container added to UNet. (Things like dropout to add later)'''
 
-    def __init__(self, channels_in, channels_out, LR):
+    def __init__(self, channels_in, channels_out, kernel_size, LR):
         super(Down, self).__init__()
         self.downsample = nn.Sequential(
-            # Padding yet to figure out
-            nn.Conv2d(channels_in, channels_out, 3, padding=(1, 1)),
+            nn.Conv2d(channels_in, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
             nn.MaxPool2d((2, 2)),
             nn.BatchNorm2d(channels_out),
             nn.LeakyReLU(negative_slope=LR),
 
-            nn.Conv2d(channels_out, channels_out, 3, padding=(1, 1)),
+            nn.Conv2d(channels_out, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
             nn.BatchNorm2d(channels_out),
             nn.LeakyReLU(negative_slope=LR),
         )
@@ -30,13 +30,13 @@ class Up(nn.Module):
     followed by upsampling layer, which leads to the next such segement. Implemented as a sequential
     container added to UNet. (Things like dropout to add later)'''
 
-    def __init__(self, channels_in, channels_out, kernel_size, LR):
+    def __init__(self, channels_in, channels_out, skip_channels, kernel_size, kernel_size_skip, LR):
         super(Up, self).__init__()
         self.upsample = nn.Sequential(
-            nn.BatchNorm2d(channels_in),
+            nn.BatchNorm2d(channels_in + skip_channels),
 
-            # Padding yet to figure out
-            nn.Conv2d(channels_in, channels_out, kernel_size, padding=(2, 2)),
+            # Input channels are added to account for the concatenation with the output from skip connection
+            nn.Conv2d(channels_in + skip_channels, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
             nn.BatchNorm2d(channels_out),
             nn.LeakyReLU(negative_slope=LR),
 
@@ -47,26 +47,22 @@ class Up(nn.Module):
             nn.Upsample(scale_factor=2, mode="nearest")
         )
 
+        self.skip = nn.Sequential(
+            nn.Conv2d(channels_in, skip_channels, kernel_size_skip, padding=get_padding_by_kernel(kernel_size_skip)),
+            nn.BatchNorm2d(skip_channels),
+            nn.LeakyReLU(negative_slope=LR)
+        )
+
     def forward(self, x, x_skip=None):
-        if x_skip:
-            #TODO #Here to add concatenation from downsamplig. Mind differences in network architecture in the paper and original UNet.
-            ...
+        if x_skip is not None:
+            # First get output from the skip connection
+            out_skip = self.skip(x_skip)
+            # Concatenate it with the input from the previous layer along the channels axis.
+            concatenated = torch.cat([x, out_skip], dim=1)
+            # Upsample
+            x = self.upsample(concatenated)
         else:
             # Version with no skip connections
             x = self.upsample(x)
         return x
 
-#TODO Possibly
-class Skip(nn.Module):
-    ...
-
-def z(shape, t='random', channels=1):
-    if t=='random':
-        return 0.1 * np.random.random((1,channels) + shape)
-    if t=='meshgrid':
-        result = np.zeros((1,2) + shape)
-        result[0, 0, :, :], result[0, 1, :, :] = np.meshgrid(
-            np.linspace(0,1,shape[0]),
-            np.linspace(0,1,shape[1])
-        )
-        return result
