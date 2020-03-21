@@ -6,7 +6,7 @@ from models.unet import UNet
 from torch.autograd import Variable
 import torch.optim as optim
 import torchvision.transforms.functional as TF
-from .models.utils import z, imshow, image_to_tensor, tensor_to_image
+from models.utils import z, imshow, image_to_tensor, tensor_to_image
 
 
 dtype = torch.cuda.FloatTensor
@@ -22,20 +22,14 @@ mask_path = "../data/kate_mask.png"
 mask = Image.open(mask_path)
 imshow(asarray(mask))
 
-
-x = TF.to_tensor(img)
-x.unsqueeze_(0)
-x = x.cuda()
+x = image_to_tensor(img)
+mask = image_to_tensor(mask)
 
 net = UNet()
 
 if use_gpu:
     net = net.cuda()
 
-# Test if network forwards the input
-out = net(x)
-
-criterion = nn.MSELoss()
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 
 # Num of iters for training
@@ -47,17 +41,17 @@ save_frequency = 250
 #Since we only have 1 image to train on, we set zero_gradienet once at the beginning
 optimizer.zero_grad()
 
-# Network Model
-net = UNet()
-
 for iter in range(num_iters):
-    input = z(shape=[img.height, img.width])
-    output = net(x)
+    input = z(shape=(img.height, img.width), channels=3)
+    print(input.dtype)
+    input = torch.from_numpy(input).float()
+    if use_gpu:
+        input = input.cuda()
 
-    mask_output = output * mask
+    output = net(input)
 
     # Optimizer
-    loss = torch.sum((mask_output - output)**2)
+    loss = torch.sum(torch.mul((output - x), mask)**2)
     loss.backward()
     optimizer.step()
 

@@ -14,8 +14,8 @@ def get_padding_by_kernel(kernel_size):
 
 
 def z(shape, t='random', channels=1):
-    if t=='random':
-        return 0.1 * np.random.random((1,channels) + shape)
+    if t =='random':
+        return 0.1 * np.random.random((1, channels) + shape)
     if t=='meshgrid':
         result = np.zeros((1,2) + shape)
         result[0, 0, :, :], result[0, 1, :, :] = np.meshgrid(
@@ -25,14 +25,13 @@ def z(shape, t='random', channels=1):
         return result
 
 
-def image_to_tensor(filepath):
+def image_to_tensor(img):
     # accept a file path to an image, return a torch tensor
-    pil = Image.open(filepath)
     pil_to_tensor = Compose([ToTensor()])
     if use_gpu:
-        tensor = pil_to_tensor(pil).cuda()
+        tensor = pil_to_tensor(img).cuda()
     else:
-        tensor = pil_to_tensor(pil)
+        tensor = pil_to_tensor(img)
     return tensor.view([1]+list(tensor.shape))
 
 
