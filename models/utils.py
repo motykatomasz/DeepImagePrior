@@ -15,7 +15,7 @@ def get_padding_by_kernel(kernel_size):
 
 def z(shape, t='random', channels=1):
     if t =='random':
-        return 0.1 * np.random.random((1, channels) + shape)
+        return 0.1 * (np.random.random((1, channels) + shape))
     if t=='meshgrid':
         result = np.zeros((1,2) + shape)
         result[0, 0, :, :], result[0, 1, :, :] = np.meshgrid(
@@ -35,14 +35,15 @@ def image_to_tensor(img):
     return tensor.view([1]+list(tensor.shape))
 
 
-def tensor_to_image(tensor, filename):
+def tensor_to_image(tensor):
     # accept a torch tensor, convert it to an image at a certain path
     tensor = tensor.view(tensor.shape[1:])
     if use_gpu:
         tensor = tensor.cpu()
     tensor_to_pil = Compose([ToPILImage()])
     pil = tensor_to_pil(tensor)
-    pil.save(filename)
+    return pil
+
 
 def imshow(img):
     plt.imshow(img)

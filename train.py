@@ -1,11 +1,8 @@
-import torch.nn as nn
 import torch
 from PIL import Image
 from numpy import asarray
 from models.unet import UNet
-from torch.autograd import Variable
 import torch.optim as optim
-import torchvision.transforms.functional as TF
 from models.utils import z, imshow, image_to_tensor, tensor_to_image
 
 
@@ -58,4 +55,7 @@ for iter in range(num_iters):
     print('Step :{}, Loss: {}'.format(iter, loss.data.cpu()))
 
     if num_iters % save_frequency == 0:
+        out_img = tensor_to_image(output)
+        imshow(asarray(out_img))
         print('OUTPUT IMAGE')
+
