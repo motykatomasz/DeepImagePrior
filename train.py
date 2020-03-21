@@ -5,14 +5,8 @@ from numpy import asarray
 from models.unet import UNet
 from torch.autograd import Variable
 import torch.optim as optim
-import matplotlib.pyplot as plt
 import torchvision.transforms.functional as TF
-from .models.utils import z
-
-
-def imshow(img):
-    plt.imshow(img)
-    plt.show()
+from .models.utils import z, imshow, image_to_tensor, tensor_to_image
 
 
 dtype = torch.cuda.FloatTensor

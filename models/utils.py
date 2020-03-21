@@ -3,6 +3,7 @@ import torch
 from torchvision.transforms import Compose, ToPILImage, ToTensor
 from PIL import Image
 import numpy as np
+import matplotlib.pyplot as plt
 
 use_gpu = torch.cuda.is_available()
 
@@ -43,3 +44,7 @@ def tensor_to_image(tensor, filename):
     tensor_to_pil = Compose([ToPILImage()])
     pil = tensor_to_pil(tensor)
     pil.save(filename)
+
+def imshow(img):
+    plt.imshow(img)
+    plt.show()
