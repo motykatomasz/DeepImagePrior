@@ -4,6 +4,7 @@ from numpy import asarray
 from models.unet import UNet
 import torch.optim as optim
 from models.utils import z, imshow, image_to_tensor, tensor_to_image
+from configs import inpaintingSettings
 
 
 dtype = torch.cuda.FloatTensor
@@ -22,15 +23,16 @@ imshow(asarray(mask))
 x = image_to_tensor(img)
 mask = image_to_tensor(mask)
 
-net = UNet()
+net = UNet(inpaintingSettings)
 
 if use_gpu:
     net = net.cuda()
 
-optimizer = optim.Adam(net.parameters(), lr=0.001)
+mse = torch.nn.MSELoss()
+optimizer = optim.Adam(net.parameters(), lr=0.1)
 
 # Num of iters for training
-num_iters = 1000
+num_iters = 5000
 
 # Num of iters when to save image
 save_frequency = 250
@@ -39,8 +41,7 @@ save_frequency = 250
 optimizer.zero_grad()
 
 for iter in range(num_iters):
-    input = z(shape=(img.height, img.width), channels=3)
-    print(input.dtype)
+    input = z(shape=(img.height, img.width), channels=32)
     input = torch.from_numpy(input).float()
     if use_gpu:
         input = input.cuda()
@@ -49,12 +50,13 @@ for iter in range(num_iters):
 
     # Optimizer
     loss = torch.sum(torch.mul((output - x), mask)**2)
+    # loss = mse(output * mask, x * mask)
     loss.backward()
     optimizer.step()
 
     print('Step :{}, Loss: {}'.format(iter, loss.data.cpu()))
 
-    if num_iters % save_frequency == 0:
+    if iter % save_frequency == 0:
         out_img = tensor_to_image(output)
         imshow(asarray(out_img))
         print('OUTPUT IMAGE')
