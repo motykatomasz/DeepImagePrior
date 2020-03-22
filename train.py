@@ -27,7 +27,7 @@ mse = torch.nn.MSELoss()
 optimizer = optim.Adam(net.parameters(), lr=0.1)
 
 # Num of iters for training
-num_iters = 25000
+num_iters = 5000
 
 # Num of iters when to save image
 save_frequency = 250
@@ -42,12 +42,12 @@ for i in range(num_iters):
 
     # Optimizer
     loss = torch.sum(torch.mul((output - x), mask)**2)
+    # loss = mse(output * mask, x * mask)
     loss.backward()
     optimizer.step()
 
-    print('Step :{}, Loss: {}'.format(i, loss.data.cpu()))
-
     if i % save_frequency == 0:
+        print('Step :{}, Loss: {}'.format(i, loss.data.cpu()))
         out_img = tensor_to_image(output)
         imshow(asarray(out_img))
         print('OUTPUT IMAGE')
