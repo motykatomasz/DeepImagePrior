@@ -5,8 +5,6 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 
-use_gpu = torch.cuda.is_available()
-
 def get_padding_by_kernel(kernel_size):
     # Assuming we are using odd kernel size
     padding_size = math.floor(kernel_size/2)
@@ -15,30 +13,38 @@ def get_padding_by_kernel(kernel_size):
 
 def z(shape, t='random', channels=1):
     if t =='random':
-        return 0.1 * (np.random.random((1, channels) + shape))
-    if t=='meshgrid':
-        result = np.zeros((1,2) + shape)
-        result[0, 0, :, :], result[0, 1, :, :] = np.meshgrid(
+        result = 0.1 * (np.random.random((channels,) + shape))
+    elif t=='meshgrid':
+        result = np.zeros((2,) + shape)
+        result[0, :, :], result[1, :, :] = np.meshgrid(
             np.linspace(0,1,shape[0]),
             np.linspace(0,1,shape[1])
         )
-        return result
+    else:
+        raise KeyError("z(shape, t=%s) is not defined".format(t))
 
+    tensor = torch.from_numpy(result)
+
+    if torch.cuda.is_available():
+        tensor = tensor.cuda()
+
+    return tensor.view((1,)+(tensor.shape)).float()
 
 def image_to_tensor(img):
     # accept a file path to an image, return a torch tensor
     pil_to_tensor = Compose([ToTensor()])
-    if use_gpu:
-        tensor = pil_to_tensor(img).cuda()
-    else:
-        tensor = pil_to_tensor(img)
-    return tensor.view([1]+list(tensor.shape))
+    tensor = pil_to_tensor(img)
+
+    if torch.cuda.is_available():
+        tensor = tensor.cuda()
+
+    return tensor.view((1,)+(tensor.shape))
 
 
 def tensor_to_image(tensor):
     # accept a torch tensor, convert it to an image at a certain path
     tensor = tensor.view(tensor.shape[1:])
-    if use_gpu:
+    if torch.cuda.is_available():
         tensor = tensor.cpu()
     tensor_to_pil = Compose([ToPILImage()])
     pil = tensor_to_pil(tensor)
