@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 use_gpu = torch.cuda.is_available()
 
+
 def get_padding_by_kernel(kernel_size):
     # Assuming we are using odd kernel size
     padding_size = math.floor(kernel_size/2)
@@ -23,6 +24,16 @@ def z(shape, t='random', channels=1):
             np.linspace(0,1,shape[1])
         )
         return result
+
+
+def psnr(input, output):
+    # Peak Signal to Noise Ratio calculated using either mean square error or root mean square error
+    # Compares error between Input matrix with Output matrix of pixels of their respective images.
+    # input = input image tensor, output = output image tensor
+
+    mse = torch.mean((input - output)**(2))
+    psnr = 20 * torch.log(255 / torch.sqrt(mse))
+    return psnr
 
 
 def image_to_tensor(img):
