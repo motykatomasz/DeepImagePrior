@@ -32,12 +32,10 @@ num_iters = 5000
 # Num of iters when to save image
 save_frequency = 250
 
-#Since we only have 1 image to train on, we set zero_gradienet once at the beginning
-optimizer.zero_grad()
-
 z0 = z(shape=(img.height, img.width), channels=3)
 
 for i in range(num_iters):
+    optimizer.zero_grad()
     output = net(z0)
 
     # Optimizer
