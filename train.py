@@ -27,27 +27,25 @@ mse = torch.nn.MSELoss()
 optimizer = optim.Adam(net.parameters(), lr=0.1)
 
 # Num of iters for training
-num_iters = 25000
+num_iters = 5000
 
 # Num of iters when to save image
 save_frequency = 250
 
-#Since we only have 1 image to train on, we set zero_gradienet once at the beginning
-optimizer.zero_grad()
-
 z0 = z(shape=(img.height, img.width), channels=3)
 
 for i in range(num_iters):
+    optimizer.zero_grad()
     output = net(z0)
 
     # Optimizer
     loss = torch.sum(torch.mul((output - x), mask)**2)
+    # loss = mse(output * mask, x * mask)
     loss.backward()
     optimizer.step()
 
-    print('Step :{}, Loss: {}'.format(i, loss.data.cpu()))
-
     if i % save_frequency == 0:
+        print('Step :{}, Loss: {}'.format(i, loss.data.cpu()))
         out_img = tensor_to_image(output)
         imshow(asarray(out_img))
         print('OUTPUT IMAGE')
