@@ -42,14 +42,14 @@ class UNet(nn.Module):
             self.up.append(
                 Up(
                     self.channels_up[i] + self.channels_skip[i],
-                    self.channels_up[i - 1] if i > 0 else 3,
+                    self.channels_up[i - 1] if i > 0 else self.channels_up[i],
                     self.kernels_up[i],
                     self.upsampling_method
                 )
             )
 
         self.debug_convolution = nn.Sequential(
-            nn.Conv2d(3, 3, self.kernels_up[0], padding=get_padding_by_kernel(self.kernels_up[0])),
+            nn.Conv2d(self.channels_up[0], 3, self.kernels_up[0], padding=get_padding_by_kernel(self.kernels_up[0])),
             nn.BatchNorm2d(3),
             nn.Sigmoid(),
         )
