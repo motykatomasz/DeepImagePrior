@@ -1,9 +1,10 @@
+import torch
 import torch.nn as nn
-from models.unet_modules import Down, Up
-
+from models.unet_modules import Down, Up, Skip
+from models.utils import get_padding_by_kernel
 
 class UNet(nn.Module):
-    def __init__(self, config):
+    def __init__(self, channels, config):
         super(UNet, self).__init__()
         self.channels_down = config["channels_down"]
         self.channels_up = config["channels_up"]
@@ -15,24 +16,55 @@ class UNet(nn.Module):
 
         self.upsampling_method = config["upsampling_method"]
 
-        self.activation = config["activation"]
-
         self.down = nn.ModuleList()
-        for i in range(len(self.channels_down)-1):
-            self.down.append(Down(self.channels_down[i], self.channels_down[i+1], self.kernels_down[i], self.activation))
+        for i in range(len(self.channels_down)):
+            self.down.append(
+                Down(
+                    self.channels_down[i - 1] if i > 0 else channels,
+                    self.channels_down[i],
+                    self.kernels_down[i]
+                )
+            )
+
+        self.skip = nn.ModuleList()
+        for i in range(len(self.channels_skip)):
+            if self.channels_skip[i] > 0:
+                self.skip.append(
+                    Skip(
+                        self.channels_down[i],
+                        self.channels_skip[i],
+                        self.kernels_skip[i]
+                    )
+                )
 
         self.up = nn.ModuleList()
-        for i in range(len(self.channels_up)-1):
-            self.up.append(Up(self.channels_up[i], self.channels_up[i+1], self.channels_skip[i], self.kernels_up[i],
-                              self.kernels_skip[i], self.upsampling_method, self.activation))
+        for i in range(len(self.channels_up)):
+            self.up.append(
+                Up(
+                    self.channels_up[i] + self.channels_skip[i],
+                    self.channels_up[i - 1] if i > 0 else 3,
+                    self.kernels_up[i],
+                    self.upsampling_method
+                )
+            )
+
+        self.debug_convolution = nn.Sequential(
+            nn.Conv2d(3, 3, self.kernels_up[0], padding=get_padding_by_kernel(self.kernels_up[0])),
+            nn.BatchNorm2d(3),
+            nn.Sigmoid(),
+        )
 
     def forward(self, x):
-        x_downsampled = [x]
-        for i in range(len(self.channels_down)-1):
-            x_downsampled.append(self.down[i](x_downsampled[i]))
+        out = x
+        x_downsampled = []
+        for i in range(len(self.channels_down)):
+                out = self.down[i](out)
+                x_downsampled.append(out)
 
-        out = self.up[0](x_downsampled[-1], x_downsampled[-1])
-        for i in range(1, len(self.channels_up)-1):
-            out = self.up[i](out, x_downsampled[-(i+1)])
+        for i in reversed(range(len(self.channels_up))):
+            if self.channels_skip[i] > 0:
+                out = self.up[i](torch.cat([out, self.skip[i](x_downsampled[i])], dim=1))
+            else:
+                out = self.up[i](out)
 
-        return out
+        return self.debug_convolution(out)
