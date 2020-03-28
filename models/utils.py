@@ -1,7 +1,6 @@
 import math
 import torch
 from torchvision.transforms import Compose, ToPILImage, ToTensor
-from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -60,6 +59,23 @@ def tensor_to_image(tensor):
     tensor_to_pil = Compose([ToPILImage()])
     pil = tensor_to_pil(tensor)
     return pil
+
+
+def crop_image(img, d=32):
+    # make image dimensions divisible by d
+    # needed so that output of the network keeps the dimensions
+    new_size = (img.size[0] - img.size[0] % d,
+                img.size[1] - img.size[1] % d)
+
+    bbox = [
+            int((img.size[0] - new_size[0])/2),
+            int((img.size[1] - new_size[1])/2),
+            int((img.size[0] + new_size[0])/2),
+            int((img.size[1] + new_size[1])/2),
+    ]
+
+    img_cropped = img.crop(bbox)
+    return img_cropped
 
 
 def imshow(img):

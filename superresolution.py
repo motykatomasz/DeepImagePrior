@@ -1,46 +1,41 @@
 import torch
-import torch.nn as nn
 from PIL import Image
 from numpy import asarray
 from models.unet import UNet
 import torch.optim as optim
-from models.utils import z, imshow, image_to_tensor, tensor_to_image
-from models.configs import inpaintingSettings
+from models.utils import z, imshow, image_to_tensor, tensor_to_image, crop_image
+from models.configs import superresolutionSettings
 
-img_path = "data/kate.png"
+img_path = "data/superresolution/snail.jpg"
 img = Image.open(img_path)
 imshow(asarray(img))
 
-mask_path = "data/kate_mask.png"
-mask = Image.open(mask_path)
-imshow(asarray(mask))
+img = crop_image(img)
 
 x = image_to_tensor(img)
-mask = image_to_tensor(mask)
 
-net = UNet(inpaintingSettings)
+net = UNet(superresolutionSettings)
 
 if torch.cuda.is_available():
     net = net.cuda()
 
 mse = torch.nn.MSELoss()
-optimizer = optim.Adam(net.parameters(), lr=0.1)
+optimizer = optim.Adam(net.parameters(), lr=0.01)
 
 # Num of iters for training
-num_iters = 5000
+num_iters = 2000
 
 # Num of iters when to save image
-save_frequency = 250
+save_frequency = 100
 
-z0 = z(shape=(img.height, img.width), channels=3)
+z0 = z(shape=(img.height, img.width), channels=32)
 
 for i in range(num_iters):
     optimizer.zero_grad()
     output = net(z0)
 
     # Optimizer
-    loss = torch.sum(torch.mul((output - x), mask)**2)
-    # loss = mse(output * mask, x * mask)
+    loss = mse(output, x)
     loss.backward()
     optimizer.step()
 
