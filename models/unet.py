@@ -15,14 +15,16 @@ class UNet(nn.Module):
 
         self.upsampling_method = config["upsampling_method"]
 
+        self.activation = config["activation"]
+
         self.down = nn.ModuleList()
         for i in range(len(self.channels_down)-1):
-            self.down.append(Down(self.channels_down[i], self.channels_down[i+1], self.kernels_down[i]))
+            self.down.append(Down(self.channels_down[i], self.channels_down[i+1], self.kernels_down[i], self.activation))
 
         self.up = nn.ModuleList()
         for i in range(len(self.channels_up)-1):
             self.up.append(Up(self.channels_up[i], self.channels_up[i+1], self.channels_skip[i], self.kernels_up[i],
-                              self.kernels_skip[i], self.upsampling_method))
+                              self.kernels_skip[i], self.upsampling_method, self.activation))
 
     def forward(self, x):
         x_downsampled = [x]
