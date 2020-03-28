@@ -9,7 +9,20 @@ inpaintingSettings = {
     "kernels_up": [5, 5, 5, 5, 5, 5],
     "kernels_skip": [0, 0, 0, 0, 0, 0],
     "upsampling_method": "nearest",
+    "activation": "sigmoid",
 }
+
+superresolutionSettings = {
+    "channels_down": [32, 128,128, 128, 128, 128],
+    "channels_up": [128, 128, 128, 128, 128, 3],
+    "channels_skip": [4, 4, 4, 4, 4],
+    "kernels_down": [3, 3, 3, 3, 3],
+    "kernels_up": [3, 3, 3, 3, 3],
+    "kernels_skip": [1, 1, 1, 1, 1],
+    "upsampling_method": "bilinear",
+    "activation": "relu",
+}
+
 
 testSettings = {
     "channels_down": [3, 16, 32, 64, 128],
@@ -19,4 +32,5 @@ testSettings = {
     "kernels_up": [5, 5, 5, 5],
     "kernels_skip": [0, 0, 0, 0],
     "upsampling_method": "nearest",
+    "activation": "sigmoid",
 }

@@ -8,17 +8,17 @@ class Down(nn.Module):
     followed by maxed pooling layer, which leads to the next such segement. Implemented as a sequential
     container added to UNet. (Things like dropout to add later)'''
 
-    def __init__(self, channels_in, channels_out, kernel_size):
+    def __init__(self, channels_in, channels_out, kernel_size, activation):
         super(Down, self).__init__()
         self.downsample = nn.Sequential(
             nn.Conv2d(channels_in, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
             nn.MaxPool2d((2, 2)),
             nn.BatchNorm2d(channels_out),
-            nn.LeakyReLU(),
+            activationMapping.get(activation, "default"),
 
             nn.Conv2d(channels_out, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
             nn.BatchNorm2d(channels_out),
-            nn.LeakyReLU(),
+            activationMapping.get(activation, "default"),
         )
 
     def forward(self, x):
@@ -30,7 +30,7 @@ class Up(nn.Module):
     followed by upsampling layer, which leads to the next such segement. Implemented as a sequential
     container added to UNet. (Things like dropout to add later)'''
 
-    def __init__(self, channels_in, channels_out, skip_channels, kernel_size, kernel_size_skip, upsampling_method):
+    def __init__(self, channels_in, channels_out, skip_channels, kernel_size, kernel_size_skip, upsampling_method, activation):
         super(Up, self).__init__()
         self.skip = True if skip_channels > 0 else False
 
@@ -40,11 +40,11 @@ class Up(nn.Module):
             # Input channels are added to account for the concatenation with the output from skip connection
             nn.Conv2d(channels_in + skip_channels, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
             nn.BatchNorm2d(channels_out),
-            nn.LeakyReLU(),
+            activationMapping.get(activation, "default"),
 
             nn.Conv2d(channels_out, channels_out, 1),
             nn.BatchNorm2d(channels_out),
-            nn.LeakyReLU(),
+            activationMapping.get(activation, "default"),
 
             nn.Upsample(scale_factor=2, mode=upsampling_method)
         )
@@ -52,7 +52,7 @@ class Up(nn.Module):
             self.skipsample = nn.Sequential(
                 nn.Conv2d(channels_in, skip_channels, kernel_size_skip, padding=get_padding_by_kernel(kernel_size_skip)),
                 nn.BatchNorm2d(skip_channels),
-                nn.LeakyReLU()
+                activationMapping.get(activation, "default"),
             )
 
     def forward(self, x, x_skip=None):
@@ -68,3 +68,10 @@ class Up(nn.Module):
             x = self.upsample(x)
         return x
 
+
+activationMapping = {
+    'sigmoid': nn.Sigmoid(),
+    'relu': nn.ReLU(),
+    'lrelu': nn.LeakyReLU(),
+    'default': nn.Sigmoid(),
+}
