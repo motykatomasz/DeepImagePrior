@@ -3,6 +3,7 @@ import torch
 from torchvision.transforms import Compose, ToPILImage, ToTensor
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
 
 
 def get_padding_by_kernel(kernel_size):
@@ -36,7 +37,7 @@ def psnr(input, output):
     # input = input image tensor, output = output image tensor
 
     mse = torch.mean((input - output)**(2))
-    psnr = 20 * torch.log(255 / torch.sqrt(mse))
+    psnr = 20 * torch.log(1 / torch.sqrt(mse))
     return psnr
 
 
@@ -60,6 +61,17 @@ def tensor_to_image(tensor):
     pil = tensor_to_pil(tensor)
     return pil
 
+def image_to_numpy(img_PIL):
+    ar = np.array(img_PIL).transpose(2, 0, 1)
+    return ar.astype(np.float32) / 255.
+
+
+def numpy_to_tensor(img_np):
+    tensor = torch.from_numpy(img_np)
+    if torch.cuda.is_available():
+        tensor = tensor.cuda()
+    return tensor.view((1,)+(tensor.shape)).float()
+
 
 def crop_image(img, d=32):
     # make image dimensions divisible by d
@@ -76,6 +88,12 @@ def crop_image(img, d=32):
 
     img_cropped = img.crop(bbox)
     return img_cropped
+
+
+def get_noisy_image(img_np, sigma):
+    """Adds Gaussian noise to an image."""
+    img_noisy_np = np.clip(img_np + np.random.normal(scale=sigma, size=img_np.shape), 0, 1).astype(np.float32)
+    return img_noisy_np
 
 
 def imshow(img):

@@ -62,3 +62,17 @@ class Skip(nn.Module):
 
     def forward(self, x):
         return self.skipsample(x)
+
+
+class OutConv(nn.Module):
+    def __init__(self, channels_in, channels_out=3):
+        super(OutConv, self).__init__()
+
+        self.outconv = nn.Sequential(
+            # UNet uses single value kernel
+            nn.Conv2d(channels_in, channels_out, 1),
+            nn.Sigmoid(),
+        )
+
+    def forward(self, x):
+        return self.outconv(x)
