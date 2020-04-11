@@ -23,6 +23,10 @@ $$
 
 Citation to Unet [[2]](#citation-2)
 
+![](./images/network_structure.png)
+
+![](./images/unet.png)
+
 ### References
 
 <div id="citation-1"><strong>[1]</strong>: Ulyanov D, Vedaldi A, Lempitsky V. Deep image prior. InProceedings of  the IEEE Conference on Computer Vision and Pattern Recognition 2018 (pp. 9446-9454).</div>
