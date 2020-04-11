@@ -1,5 +1,7 @@
 # Deep Image Prior <br> Reproducibility Project
 
+## Introduction
+
 This blog post is for the reproducibility project for the TU Delft Deep Learning course.
 
  What we are going to attempt in this blog post is to reproduce the results 
@@ -14,8 +16,7 @@ Test code
 
 <InlineMath>c = \\pm\\sqrt{a^2 + b^2}</InlineMath>
 
-test math blocks [^1]
-
+test math blocks
 ```katex {evaluate: true}
 c = \\pm\\sqrt{a^2 + b^2}
 ```
