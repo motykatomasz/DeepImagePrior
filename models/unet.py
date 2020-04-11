@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-from models.unet_modules import Down, Up, Skip, OutConv
-from models.utils import get_padding_by_kernel
+from models.unet_modules import Down, Up, Skip, OutConv, Connect
+
 
 class UNet(nn.Module):
     def __init__(self, channels, config):
@@ -39,6 +39,13 @@ class UNet(nn.Module):
             else:
                 self.skip.append(None)
 
+        self.connect_layer = Connect(
+            self.channels_down[-1],
+            self.channels_up[-1],
+            self.kernels_down[-1],
+            self.upsampling_method
+        )
+
         self.up = nn.ModuleList()
         for i in range(len(self.channels_up)):
             self.up.append(
@@ -50,20 +57,16 @@ class UNet(nn.Module):
                 )
             )
 
-        # self.debug_convolution = nn.Sequential(
-        #     nn.Conv2d(self.channels_up[0], 3, self.kernels_up[0], padding=get_padding_by_kernel(self.kernels_up[0])),
-        #     nn.BatchNorm2d(3),
-        #     nn.Sigmoid(),
-        # )
-
         self.out_conv = OutConv(self.channels_up[0])
 
     def forward(self, x):
         out = x
         x_downsampled = []
         for i in range(len(self.channels_down)):
-                out = self.down[i](out)
-                x_downsampled.append(out)
+            out = self.down[i](out)
+            x_downsampled.append(out)
+
+        out = self.connect_layer(out)
 
         for i in reversed(range(len(self.channels_up))):
             if self.channels_skip[i] > 0:
