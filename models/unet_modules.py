@@ -64,6 +64,27 @@ class Skip(nn.Module):
         return self.skipsample(x)
 
 
+class Connect(nn.Module):
+    def __init__(self, channels_in, channels_out, kernel_size, upsampling_method, activation=nn.LeakyReLU()):
+        super(Connect, self).__init__()
+
+        self.connect = nn.Sequential(
+            nn.MaxPool2d((2, 2)),
+            nn.Conv2d(channels_in, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
+            nn.BatchNorm2d(channels_out),
+            activation,
+
+            nn.Conv2d(channels_out, channels_out, kernel_size, padding=get_padding_by_kernel(kernel_size)),
+            nn.BatchNorm2d(channels_out),
+            activation,
+
+            nn.Upsample(scale_factor=2, mode=upsampling_method)
+        )
+
+    def forward(self, x):
+        return self.connect(x)
+
+
 class OutConv(nn.Module):
     def __init__(self, channels_in, channels_out=3):
         super(OutConv, self).__init__()
