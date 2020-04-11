@@ -9,6 +9,10 @@ new Docute({
         link: '/'
       },
       {
+        title: 'Code',
+        link: 'https://github.com/motykatomasz/DeepImagePrior'
+      },
+      {
         title: 'Authors',
         link: '/AUTHORS'
       }
