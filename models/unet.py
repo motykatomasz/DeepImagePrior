@@ -4,7 +4,7 @@ from models.unet_modules import Down, Up, Skip, OutConv, Connect
 
 
 class UNet(nn.Module):
-    def __init__(self, channels, config):
+    def __init__(self, channels, out_channels, config):
         super(UNet, self).__init__()
         self.channels_down = config["channels_down"]
         self.channels_up = config["channels_up"]
@@ -57,7 +57,7 @@ class UNet(nn.Module):
                 )
             )
 
-        self.out_conv = OutConv(self.channels_up[0])
+        self.out_conv = OutConv(self.channels_up[0], out_channels)
 
     def forward(self, x):
         out = x
