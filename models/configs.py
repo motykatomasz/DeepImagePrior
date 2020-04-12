@@ -12,8 +12,8 @@ denoisingSettings = {
 }
 
 superresolutionSettings = {
-    "channels_down": [32, 128,128, 128, 128, 128],
-    "channels_up": [128, 128, 128, 128, 128, 3],
+    "channels_down": [128,128, 128, 128, 128],
+    "channels_up": [128, 128, 128, 128, 128],
     "channels_skip": [4, 4, 4, 4, 4],
     "kernels_down": [3, 3, 3, 3, 3],
     "kernels_up": [3, 3, 3, 3, 3],
