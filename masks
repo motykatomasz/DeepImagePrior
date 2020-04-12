@@ -1,0 +1,39 @@
+from PIL import Image
+import os
+import numpy as np
+import cv2
+from skimage.measure import compare_ssim
+import imutils
+
+# Paths of two image frames
+image1Path = "data/Gray/Corrupted/"
+image2Path = "data/Gray/Originals/"
+image3Path = "data/Gray/Masks"
+for original in os.listdir(image1Path):
+    if original.endswith(".png"):
+        for mask in os.listdir(image2Path):
+            if original == mask and mask.endswith(".png"):
+                # image1 = Image.open(image1Path + original)
+                # image2 = Image.open(image2Path + mask)
+                image1 = cv2.imread(image1Path + original)
+                image2 = cv2.imread(image2Path + mask)
+                before_gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+                after_gray = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+                (score, diff) = compare_ssim(after_gray, before_gray, full=True)
+                diff = (diff * 255).astype("uint8")
+                thresh = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+                cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+                cnts = imutils.grab_contours(cnts)
+
+                # buffer1 = np.asarray(image1)
+                # buffer2 = np.asarray(image2)
+                #
+                # buffer3 = np.abs(buffer1, buffer2)
+                #
+                # differenceImage = np.subtract(buffer2, buffer1)
+                # cv2.imshow("Thresh", thresh)
+                # cv2.waitKey(0)
+                cv2.imwrite("data/Gray/Masks/{}".format(original), thresh)
+                # differenceImage.save("data/Gray/Masks/{}".format(original), "png")
+            else:
+                continue
