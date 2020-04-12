@@ -14,10 +14,11 @@
 
 ## TODO
 
-* Check if noise at each iteration is done correctly
+- [ ] Check if noise at each iteration is done correctly
 
-* Experiment with adding noise at each iteration
-* Experiment with all the variant networks and chose the one with best result
+- [ ] Experiment with adding noise at each iteration
+
+- [ ] Experiment with all the variant networks and chose the one with best result
 
 ## Results
 
