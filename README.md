@@ -21,7 +21,7 @@ Iteration 0
 
 
 Iteration 250
-![250 Iteration](./images/pepper/250.png =250x)
+![250 Iteration]("./images/pepper/250.png" =250x)
 ![250 Iteration](./images/man/250.png =250x)
 
 Iteration 1000
