@@ -1,10 +1,13 @@
 # Deep Image Prior <br> Reproducibility Project
 
 ## Introduction
-
 This blog post is for the reproducibility project for the TU Delft Deep Learning course.
-
  What we are going to attempt in this blog post is to reproduce the experiments and the results from the paper  "Deep Image Prior"[[1]](#citation-1) without running or consulting its available code.
+ 
+Traditionally we approach towards any optimization task on image by learning image prior from training samples, the larger the number of samples the better the results. Author of this paper propose a method to circumvent capturing a prior by learning on samples but rather capturing prior of Convolutional network's parameters. 
+
+This approach exploits the fact that structure of a generator network are surjective mapping of g:0 -> x, hence the formula for optimization task min E(x;x0) + R(x) becomes min E(g(0);x0) + R(g(0)). Furthermore, if we select a good mapping g, but adjusting network hyperparameters, we could get rid of prior term and utilise a randomly initialized function as fixed input and learn from corrupted image the network parameters min E(f(z); x0). This parameterization network prefers naturally looking images over noise and descends more quickly in the optimization process, so the generator network provides a prior that corresponds to set of images that can be produced by the network with parameters optimized.
+
 
 ## Experiments of the paper
 The paper demonstrates that the success of Convolutional Neural Networks is not only attributed by the prior knowledge gained from the training data but also from the prior knowledge attributed to the structure of the network. The paper demonstrates this by using an untrained U-Net[[2]](#citation-2) to restore images.
