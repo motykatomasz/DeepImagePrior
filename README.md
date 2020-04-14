@@ -17,6 +17,29 @@ The types of images restoration performed by the paper are:
 
 
 ### Restoration Process
+Iteration 0
+
+
+Iteration 250
+![](./images/pepper/250.png)
+![](./images/man/250.png)
+
+Iteration 1000
+![](./images/pepper/1000.png)
+![](./images/man/1000.png)
+
+Iteration 2000
+![](./images/pepper/2000.png)
+![](./images/man/2000.png)
+
+Iteration 5000
+![](./images/pepper/5000.png)
+![](./images/man/5000.png)
+
+Iteration 11000
+![](./images/pepper/11000.png)
+![](./images/man/11000.png)
+
 
 * Image denoising
 * Image inpainting
