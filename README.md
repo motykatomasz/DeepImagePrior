@@ -37,8 +37,8 @@ Iteration 0
 <img src="./images/man/5000.png" width="40%">.
 
 Iteration 11000
-<img src="./images/pepper/10000.png" width="40%">.
-<img src="./images/man/10000.png" width="40%">.
+<img src="./images/pepper/11000.png" width="40%">.
+<img src="./images/man/11000.png" width="40%">.
 
 
 * Image denoising
