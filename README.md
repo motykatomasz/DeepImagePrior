@@ -20,27 +20,25 @@ The types of images restoration performed by the paper are:
 Iteration 0
 
 
-Iteration 250
+250 Iteration 
 <img src="./images/pepper/250.png" width="40%">.
 <img src="./images/man/250.png" width="40%">.
-![250 Iteration](./images/pepper/250.png =250x)
-![250 Iteration](./images/man/250.png =250x)
 
-Iteration 1000
-![1000 Iteration](./images/pepper/1000.png =250x)
-![1000 Iteration](./images/man/1000.png =250x)
+1000 Iteration 
+<img src="./images/pepper/1000.png" width="40%">.
+<img src="./images/man/1000.png" width="40%">.
 
-Iteration 2000
-![2000 Iteration](./images/pepper/2000.png =250x)
-![2000 Iteration](./images/man/2000.png =250x)
+2000 Iteration 
+<img src="./images/pepper/2000.png" width="40%">.
+<img src="./images/man/2000.png" width="40%">.
 
-Iteration 5000
-![5000 Iteration](./images/pepper/5000.png =250x)
-![5000 Iteration](./images/man/5000.png =250x)
+5000 Iteration 
+<img src="./images/pepper/5000.png" width="40%">.
+<img src="./images/man/5000.png" width="40%">.
 
 Iteration 11000
-![11000 Iteration](./images/pepper/11000.png =250x)
-![11000 Iteration](./images/man/11000.png =250x)
+<img src="./images/pepper/10000.png" width="40%">.
+<img src="./images/man/10000.png" width="40%">.
 
 
 * Image denoising
