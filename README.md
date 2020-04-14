@@ -21,24 +21,24 @@ Iteration 0
 
 
 Iteration 250
-![](./images/pepper/250.png)
-![](./images/man/250.png)
+![250 Iteration](./images/pepper/250.png)
+![250 Iteration](./images/man/250.png)
 
 Iteration 1000
-![](./images/pepper/1000.png)
-![](./images/man/1000.png)
+![1000 Iteration](./images/pepper/1000.png)
+![1000 Iteration](./images/man/1000.png)
 
 Iteration 2000
-![](./images/pepper/2000.png)
-![](./images/man/2000.png)
+![2000 Iteration](./images/pepper/2000.png)
+![2000 Iteration](./images/man/2000.png)
 
 Iteration 5000
-![](./images/pepper/5000.png)
-![](./images/man/5000.png)
+![5000 Iteration](./images/pepper/5000.png)
+![5000 Iteration](./images/man/5000.png)
 
 Iteration 11000
-![](./images/pepper/11000.png)
-![](./images/man/11000.png)
+![11000 Iteration](./images/pepper/11000.png)
+![11000 Iteration](./images/man/11000.png)
 
 
 * Image denoising
