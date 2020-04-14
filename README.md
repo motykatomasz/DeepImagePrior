@@ -1,10 +1,7 @@
 # Deep Image Prior <br> Reproducibility Project
 
 ## Introduction
-This blog post is for the reproducibility project for the TU Delft Deep Learning course.
- What we are going to attempt in this blog post is to reproduce the experiments and the results from the paper  "Deep Image Prior"[[1]](#citation-1) without running or consulting its available code.
- 
-Traditionally we approach towards any optimization task on image by learning image prior from training samples, the larger the number of samples the better the results. Author of this paper propose a method to circumvent capturing a prior by learning on samples but rather capturing prior of Convolutional network's parameters. 
+Traditionally, Our approach towards any optimization task on image is by learning image prior from the training samples, the larger the number of samples the better the results. Author of this paper propose a method to circumvent capturing a prior by learning on samples but rather capturing prior of Convolutional network's parameters called as Deep Image Prior. This blog post is for the reproducibility project for the TU Delft Deep Learning course. What we are going to attempt in this blog post is to reproduce the experiments and the results from the paper  "Deep Image Prior"[[1]](#citation-1) without running or consulting its available code.
 
 
 ## Method
