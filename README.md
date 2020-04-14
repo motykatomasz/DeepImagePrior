@@ -14,6 +14,10 @@ This approach exploits the fact that structure of a generator network are surjec
 ## Experiments of the paper
 The paper demonstrates that the success of Convolutional Neural Networks is not only attributed by the prior knowledge gained from the training data but also from the prior knowledge attributed to the structure of the network. The paper demonstrates this by using an untrained U-Net[[2]](#citation-2) to restore images.
 The types of images restoration performed by the paper are:
+
+
+### Restoration Process
+
 * Image denoising
 * Image inpainting
 * Image super-resolution
