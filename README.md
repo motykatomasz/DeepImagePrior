@@ -18,7 +18,8 @@ The types of images restoration performed by the paper are:
 
 ### Restoration Process
 Iteration 0
-
+<img src="./images/pepper/0.png" width="40%">.
+<img src="./images/man/0.png" width="40%">.
 
 250 Iteration 
 <img src="./images/pepper/250.png" width="40%">.
