@@ -1,0 +1,3 @@
+method,psnr
+ours,28.08252299165041
+deep-image-prior,32.48070759405945

@@ -5,7 +5,7 @@ Traditionally, Our approach towards any optimization task on image is by learnin
 
 
 ## Method
-This approach exploits the fact that structure of a generator network are surjective mapping of g:0 -> x, hence the formula for optimization task min E(x;x0) + R(x) becomes min E(g(0);x0) + R(g(0)). Furthermore, if we select a good mapping g, but adjusting network hyperparameters, we could get rid of prior term and utilise a randomly initialized function as fixed input and learn from corrupted image the network parameters min E(f(z); x0). This parameterization network prefers naturally looking images over noise and descends more quickly in the optimization process, so the generator network provides a prior that corresponds to set of images that can be produced by the network with parameters optimized.
+This approach exploits the fact that structure of a generator network are surjective mapping of <InlineMath>g:0 -> x</InlineMath>, hence the formula for optimization task <InlineMath>min E(x;x0) + R(x)</InlineMath> becomes <InlineMath>min E(g(0);x0) + R(g(0))</InlineMath>. Furthermore, if we select a good mapping g, but adjusting network hyperparameters, we could get rid of prior term and utilise a randomly initialized function as fixed input and learn from corrupted image the network parameters <InlineMath>min E(f(z); x0)</InlineMath>. This parameterization network prefers naturally looking images over noise and descends more quickly in the optimization process, so the generator network provides a prior that corresponds to set of images that can be produced by the network with parameters optimized.
 
 
 ## Experiments of the paper
@@ -15,28 +15,28 @@ The types of images restoration performed by the paper are:
 
 ### Restoration Process
 Iteration 0
-<img src="./images/pepper/0.png" width="40%">.
-<img src="./images/man/0.png" width="40%">.
+<img src="./deeplearning/peppers/0.png" width="40%">.
+<img src="./deeplearning/man/0.png" width="40%">.
 
 250 Iteration 
-<img src="./images/pepper/250.png" width="40%">.
-<img src="./images/man/250.png" width="40%">.
+<img src="./deeplearning/peppers/250.png" width="40%">.
+<img src="./deeplearning/man/250.png" width="40%">.
 
 1000 Iteration 
-<img src="./images/pepper/1000.png" width="40%">.
-<img src="./images/man/1000.png" width="40%">.
+<img src="./deeplearning/peppers/1000.png" width="40%">.
+<img src="./deeplearning/man/1000.png" width="40%">.
 
 2000 Iteration 
-<img src="./images/pepper/2000.png" width="40%">.
-<img src="./images/man/2000.png" width="40%">.
+<img src="./deeplearning/peppers/2000.png" width="40%">.
+<img src="./deeplearning/man/2000.png" width="40%">.
 
 5000 Iteration 
-<img src="./images/pepper/5000.png" width="40%">.
-<img src="./images/man/5000.png" width="40%">.
+<img src="./deeplearning/peppers/5000.png" width="40%">.
+<img src="./deeplearning/man/5000.png" width="40%">.
 
 Iteration 11000
-<img src="./images/pepper/11000.png" width="40%">.
-<img src="./images/man/11000.png" width="40%">.
+<img src="./deeplearning/peppers/11000.png" width="40%">.
+<img src="./deeplearning/man/11000.png" width="40%">.
 
 
 * Image denoising
@@ -70,6 +70,10 @@ Citation to Unet [[2]](#citation-2)
 ![](./images/network_structure.png)
 
 ![](./images/unet.png)
+
+{selector}
+{comparison}
+{plot}
 
 ### References
 

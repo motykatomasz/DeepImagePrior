@@ -1,7 +1,8 @@
 new Docute({
     target: '#docute',
     plugins: [
-      docuteKatex()
+      docuteKatex(),
+      showPlot,
     ],
     nav: [
       {
