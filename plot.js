@@ -118,6 +118,18 @@ function plot(data) {
     maingroup.append("g")
       .call(d3.axisLeft(y));
 
+      maingroup
+        .append("text")
+        .text("loss")
+        .attr("text-anchor", "middle")
+        .attr("transform",`translate(${-margin.left*3/4}, ${margin.top + height/2}) rotate(-90)`)
+
+      maingroup
+        .append("text")
+        .text("iterations")
+        .attr("text-anchor", "middle")
+        .attr("transform",`translate(${width/2}, ${margin.top + height + margin.bottom*2/3})`)
+
     maingroup.append("path")
       .datum(data)
       .attr("fill", "none")
