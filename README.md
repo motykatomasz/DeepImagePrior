@@ -36,14 +36,20 @@ As it is usually the case, obtaining posterior distribution <inlineMath>p(x|\hat
 ```katex {evaluate: true}
 p(x|\hat{x}) = \frac{p(\hat{x}|x)p(x)}{p(\hat{x})} \sim p(\hat{x}|x)p(x)
 ```
-
-
-## Method
-This approach exploits the fact that structure of a generator network are surjective mapping of <InlineMath>g:0 \to x</InlineMath>, hence the formula for optimization task <InlineMath>min_x E(x;x_0) + R(x)</InlineMath> becomes <InlineMath>min_x E(g(0);x_0) + R(g(0))</InlineMath>. Furthermore, if we select a good mapping <InlineMath>g</InlineMath>, but adjusting network hyperparameters, we could get rid of prior term and utilise a randomly initialized function as fixed input and learn from corrupted image the network parameters <InlineMath>min_z E(f(z); x_0)</InlineMath>. This parameterization network prefers naturally looking images over noise and descends more quickly in the optimization process, so the generator network provides a prior that corresponds to set of images that can be produced by the network with parameters optimized.
+Therefore
+```katex {evaluate: true}
+MAP: x^{*} = argmax_{x} p(x|\hat{x})\\
+= argmax_{x}p(\hat{x}|x)p(x) \\
+= argmax_{x} log(p(\hat{x}|x)) + log(p(x)) \\
+= argmin_{x} -log(p(\hat{x}|x)) - log(p(x)) \\
+= argmin_{x} E(x;\hat{x}) + R(x)
+```
+where <inlineMath>E(x;\hat{x})</inlineMath> is the information entropy and <inlineMath>R(x)</inlineMath> is a regularizer term.  
+This approach exploits the fact that structure of a generator network are surjective mapping of <InlineMath>g:0 \to x</InlineMath>, hence the formula for optimization task <InlineMath>argmin_x E(x;\hat{x}) + R(x)</InlineMath> becomes <InlineMath>argmin_x E(g(0);\hat{x}) + R(g(0))</InlineMath>. Furthermore, if we select a good mapping <InlineMath>g</InlineMath>, but adjusting network hyperparameters, we could get rid of prior term and utilise a randomly initialized function as fixed input and learn from corrupted image the network parameters <InlineMath>argmin_\theta E(f_\theta(z); \hat{x})</InlineMath>. This parameterization network prefers naturally looking images over noise and descends more quickly in the optimization process, so the generator network provides a prior that corresponds to set of images that can be produced by the network with parameters optimized.
 
 
 ## Developing the Network from the paper
-The main paper does not contain the structure of the network they used. Luckly, the authors of the paper provided a supplementary material document. In there they describe the netwrok they used and the hyper-parameters. In the suplementary material, they also provide a diagram with the structure of the network, as you can see in Figure [1](#figure-1), where <InlineMath>n_d[i]</InlineMath> and <InlineMath>k_d[i]</InlineMath> are respectivelly the number of filters and the kernel size of the convolutional layers of the downsampling connection <InlineMath>d_i</InlineMath>. In the same fashion <InlineMath>n_s[i]</InlineMath> and <InlineMath>k_s[i]</InlineMath> are respectivelly the number of filters and the kernel size of skip connection <InlineMath>s_i</InlineMath> and <InlineMath>n_u[i]</InlineMath> and <InlineMath>k_u[i]</InlineMath> are respectivelly the number of filters and the kernel size of upsampling connection <InlineMath>u_i</InlineMath>.
+The main paper does not contain the structure of the network they used. Luckly, the authors provided supplementary material to the paper. In the supplementary material they describe the netwrok and the hyper-parameters they used. In the suplementary material, they also provide a diagram with the structure of the network, as you can see in Figure [1](#figure-1), where <InlineMath>n_d[i]</InlineMath> and <InlineMath>k_d[i]</InlineMath> are respectivelly the number of filters and the kernel size of the convolutional layers of the downsampling connection <InlineMath>d_i</InlineMath>. In the same fashion <InlineMath>n_s[i]</InlineMath> and <InlineMath>k_s[i]</InlineMath> are respectivelly the number of filters and the kernel size of skip connection <InlineMath>s_i</InlineMath> and <InlineMath>n_u[i]</InlineMath> and <InlineMath>k_u[i]</InlineMath> are respectivelly the number of filters and the kernel size of upsampling connection <InlineMath>u_i</InlineMath>.
 
 <figure id="figure-1">
   <img src="./images/network_structure.png">
@@ -258,8 +264,8 @@ class UNet(nn.Module):
 </collapse>
 
 ## Learning process
-As described from the paper, we used Adam optimizer with  learning rate <inlineMath>0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
-In the supplementary material, they described how the optimization process destabilizes for low values of the loss function, and there after the loss function increases at consequent iterations of the optimization process. The approach describe in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and restore its weights to the values from the previouse iteration. We noticed that this approach does not prevent the optimization process from restabilizing afterward when the weights are restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever we restore the weights.  
+As described in the paper,the loss function is <inlineMath>||f_\theta(z) - \hat{x}||^2</inlineMath>, Adam optimizer was used with learning rate <inlineMath>0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
+In the supplementary material, they described that the optimization process destabilizes for low values of the loss function, and there after the loss function increases at consequent iterations of the optimization process. The approach describe in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and restore its weights to the values from the previouse iteration. We noticed that this approach does not prevent the optimization process from restabilizing afterward when the weights are restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever we restore the weights.  
 In the following plot you can see the learning process and how the change in the learning rate stabilizes the optimization process.  
 {selector}
 {comparison}
