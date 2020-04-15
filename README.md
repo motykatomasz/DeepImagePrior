@@ -53,8 +53,7 @@ p(x|\hat{x}) = \frac{p(\hat{x}|x)p(x)}{p(\hat{x})} \sim p(\hat{x}|x)p(x)
 ```
 Therefore
 ```katex {evaluate: true}
-MAP: x^{*} = argmax_{x} p(x|\hat{x})\\
-= argmax_{x}p(\hat{x}|x)p(x) \\
+MAP: x^{*} = argmax_{x}p(\hat{x}|x)p(x) \\
 = argmax_{x} log(p(\hat{x}|x)) + log(p(x)) \\
 = argmin_{x} -log(p(\hat{x}|x)) - log(p(x)) \\
 = argmin_{x} E(x;\hat{x}) + R(x)
