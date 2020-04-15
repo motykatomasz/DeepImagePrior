@@ -46,10 +46,6 @@ const showPlot = {
         `.trim())
         .replace(/{plot}/g, `<div id="plot"></div>`)
       })
-
-      api. onContentUpdated(() => {
-        plot(data)
-      })
     }
   }
 
