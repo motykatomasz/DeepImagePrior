@@ -267,7 +267,8 @@ class UNet(nn.Module):
 As described in the paper,the loss function is <inlineMath>||f_\theta(z) - \hat{x}||^2</inlineMath>, Adam optimizer was used with learning rate <inlineMath>0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
 In the supplementary material, they described that the optimization process destabilizes for low values of the loss function, and there after the loss function increases at consequent iterations of the optimization process. The approach describe in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and restore its weights to the values from the previouse iteration. We noticed that this approach does not prevent the optimization process from restabilizing afterward when the weights are restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever we restore the weights.  
 In the following plot you can see the learning process and how the change in the learning rate stabilizes the optimization process.  
-{selector}
+    
+**Image Selected** {selector}
 {comparison}
 {plot}
 
