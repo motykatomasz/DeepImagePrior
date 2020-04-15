@@ -69,7 +69,7 @@ The main paper does not contain the structure of the network. Luckly, the author
 
 <figure id="figure-5">
   <img src="./images/network_structure.png">
-  <figcaption>Figure 1 - Network Structure</figcaption>
+  <figcaption>Figure 5 - Network Structure</figcaption>
 </figure> 
 
 The supplementary material states that the downsampling procedure they used was done by the stride implementation of the convolution, but they also state that they got a similar result with average/max pooling and downsampling with Lanczos kernel. In our implementation we decided to use max pooling. The upsampling operation is dependent on the application, but the only used upsampling operations are nearest upsampling and bilinear upsampling. 
@@ -282,7 +282,7 @@ class UNet(nn.Module):
 </collapse>
 
 ## Learning process
-As described in the paper,the loss function is <inlineMath>||(f_\theta(z) - \hat{x}) \odot m||^2</inlineMath>, where <inlineMath>m_{ij}=0</inlineMath> if <inlineMath>\hat{x}\_{ij}</inlineMath> is a missing pixel <inlineMath>m\_{ij}=1</inlineMath> otherwise. Adam optimizer was used with learning rate <inlineMath>RL=0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
+As described in the paper,the loss function is <inlineMath>||(f_\theta(z) - \hat{x}) \odot m||^2</inlineMath>, where <inlineMath>m_{ij}=0</inlineMath> if <inlineMath>\hat{x}\_{ij}</inlineMath> is a missing pixel and <inlineMath>m\_{ij}=1</inlineMath> if the value <inlineMath>\hat{x}\_{ij}</inlineMath> is known. Adam optimizer was used with learning rate <inlineMath>RL=0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
 In the supplementary material, they described that the optimization process destabilizes for low values of the loss function and there after the loss function increases at consequent iterations of the optimization process. The approach described in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and if it was the weights were restored to their value from the previouse iteration. We noticed that this approach does not prevent the optimization process from destabilizing after the weights were restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever the weights were restored.  
 In the following plot you can see the learning process and how the change in the learning rate stabilizes the optimization process.  
     
