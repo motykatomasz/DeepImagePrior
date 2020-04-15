@@ -77,6 +77,47 @@ new Docute({
             link: '/#introduction'
         },
         {
+          title: 'Problems tackled by the paper',
+          link: '/#problems-tackled-by-the-paper'
+        },
+        {
+          title: 'What is Deep Image Prior',
+          link: '/#what-is-deep-image-prior'
+        },
+        {
+          title: 'How does it work?',
+          link: '/#how-does-it-work'
+        },
+        {
+          title: 'Developing the Network from the paper',
+          children: [
+            {
+              title: 'Structure of The Network',
+              link: '/#structure-of-the-network'
+            },
+            {
+              title: 'Peculiarities From The Network Structure',
+              link: '/#peculiarities-from-the-network-structure'
+            },
+            {
+              title: 'Resolving The Peculiarities',
+              link: '/#resolving-the-peculiarities'
+            },
+            {
+              title: 'Putting It All Together',
+              link: '/#putting-it-all-together'
+            },
+          ]
+        },
+        {
+          title: 'Learning process',
+          link: '/#learning-process'
+        },
+        {
+          title: 'Experimental Results',
+          link: '/#experimental-results'
+        },
+        {
             title: 'References',
             link: '/#references'
         }
