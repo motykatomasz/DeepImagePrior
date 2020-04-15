@@ -5,9 +5,24 @@ This blog post is for the reproducibility project for the TU Delft Deep Learning
 
 ## Problems tackled by the paper
 The problems tackled by the paper are problem of image restoration. Some example of image restoration tasks are for example:
-* Image denoising ![](https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_02.png)
-* Image super-resolution ![](https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_01.png)
-* Image inpainting ![](https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_09.png)
+* Image denoising Figure [1](#figure-1) <figure id="figure-1">
+<img src="https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_02.png">
+  <figcaption>Figure 1 - Example of image denoising</figcaption>
+</figure> 
+* Image super-resolution Figure [2](#figure-2) <figure id="figure-2">
+<img src="https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_01.png">
+  <figcaption>Figure 2 - Example of super-resolution</figcaption>
+</figure> 
+* Image inpainting Figure [3](#figure-3) <figure id="figure-3">
+<img src="https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_09.png">
+  <figcaption>Figure 3 - Example of image inpainting</figcaption>
+</figure> 
+
+The problem that we will focus on in this blog post is a subset of image inpainting which the paper refers to as image reconstruction. The task consists on, given an image <inlineMath>\hat{x}</inlineMath> and a mask <inlineMath>m</inlineMath> where <inlineMath>m\_{ij} \sim Bernoulli(p)</inlineMath> and given that <inlineMath>\hat{x} = m \odot x</inlineMath>, estimate <inlineMath>x</inlineMath>. The main paper performed tests mainly with <inlineMath>p=0.5</inlineMath>. For a more intuitive formulation of the problem, you can check Figure [4](#figure-4), where certain pixel values are missing and what we want to do is reconstruct the entire image.
+<figure id="figure-4">
+  <img src="./images/restore.png">
+  <figcaption>Figure 4 - Example of image reconstruction</figcaption>
+</figure> 
 
 ## What is Deep Image Prior
 In the paper, the authors argue that a great
@@ -50,9 +65,9 @@ This approach exploits the fact that structure of a generator network are surjec
 
 ## Developing the Network from the paper
 ### Structure of The Network
-The main paper does not contain the structure of the network. Luckly, the authors provided supplementary material to the paper. In the supplementary material they describe the network and the hyper-parameters they used. In the supplementary material, they also provide a diagram with the structure of the network, as you can see in Figure [1](#figure-1), where <InlineMath>n_d[i]</InlineMath> and <InlineMath>k_d[i]</InlineMath> are respectively the number of filters and the kernel size of the convolutional layers of the downsampling connection <InlineMath>d_i</InlineMath>. In the same fashion <InlineMath>n_s[i]</InlineMath> and <InlineMath>k_s[i]</InlineMath> are respectively the number of filters and the kernel size of skip connection <InlineMath>s_i</InlineMath> and <InlineMath>n_u[i]</InlineMath> and <InlineMath>k_u[i]</InlineMath> are respectively the number of filters and the kernel size of upsampling connection <InlineMath>u_i</InlineMath>.
+The main paper does not contain the structure of the network. Luckly, the authors provided supplementary material to the paper. In the supplementary material they describe the network and the hyper-parameters they used. In the supplementary material, they also provide a diagram with the structure of the network, as you can see in Figure [5](#figure-5), where <InlineMath>n_d[i]</InlineMath> and <InlineMath>k_d[i]</InlineMath> are respectively the number of filters and the kernel size of the convolutional layers of the downsampling connection <InlineMath>d_i</InlineMath>. In the same fashion <InlineMath>n_s[i]</InlineMath> and <InlineMath>k_s[i]</InlineMath> are respectively the number of filters and the kernel size of skip connection <InlineMath>s_i</InlineMath> and <InlineMath>n_u[i]</InlineMath> and <InlineMath>k_u[i]</InlineMath> are respectively the number of filters and the kernel size of upsampling connection <InlineMath>u_i</InlineMath>.
 
-<figure id="figure-1">
+<figure id="figure-5">
   <img src="./images/network_structure.png">
   <figcaption>Figure 1 - Network Structure</figcaption>
 </figure> 
@@ -136,7 +151,7 @@ Firstly as you can see from Figure [1](#figure-1), the last operation from the n
 Secondly in the case of image reconstruction, <InlineMath>n_s[5]=4</InlineMath>, which means that the number of filters and consequently the number of channels of the output image is <InlineMath>4</InlineMath>. The paper in the case of image reconstruction experiments with gray-scale images, therefore the output image should have <InlineMath>1</InlineMath> channel in total and not <InlineMath>4</InlineMath>.  
 Thirdly, because the last activation function is `Leaky ReLu` the range of possible  pixel values of the resulting image is <InlineMath>(-\infin,\infin)</InlineMath> instead of <InlineMath>[0, 1]</InlineMath>.  
 Fourthly, in the case of the hyperparameters provided for large hole inpainting where <InlineMath>n_s = [0, 0, 0, 0, 0, 0] </InlineMath> and <InlineMath> k_s=
-[\text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}]</InlineMath> which can be interpreted as skip connections being omitted. But given the structure shown in Figure [1](#figure-1) the only connection between the encoder and the decoder are the skip connections, which makes omitting all the skip connections not possible.
+[\text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}]</InlineMath> which can be interpreted as skip connections being omitted. But given the structure shown in Figure [5](#figure-5) the only connection between the encoder and the decoder are the skip connections, which makes omitting all the skip connections not possible.
 
 ### Resolving The Peculiarities
 To solve the peculiarities, we added components from the original U-Net[[2]](#citation-2) architecture.  
@@ -271,7 +286,7 @@ As described in the paper,the loss function is <inlineMath>||(f_\theta(z) - \hat
 In the supplementary material, they described that the optimization process destabilizes for low values of the loss function and there after the loss function increases at consequent iterations of the optimization process. The approach described in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and if it was the weights were restored to their value from the previouse iteration. We noticed that this approach does not prevent the optimization process from destabilizing after the weights were restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever the weights were restored.  
 In the following plot you can see the learning process and how the change in the learning rate stabilizes the optimization process.  
     
-**Image Selected** {selector}
+**Image Selected:** {selector}
 {comparison}
 {plot}
 
