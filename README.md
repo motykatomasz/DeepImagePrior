@@ -20,12 +20,12 @@ as a parametrization of the restored image.
 
 ## How does it work?
 
-Lets assume that our image x is under following process:
+Lets assume that our image <inlineMath>x</inlineMath> is under following process:
 
 <inlineMath> x \Rightarrow Degradation \Rightarrow  \hat{x} \Rightarrow  Restoration \Rightarrow x^{*} </inlineMath>
 
 Our goal is to find <inlineMath> x^{*}</inlineMath>.
-We can do that by finding the MAP estimate of our posterior distribution of clean images:
+We can do this by finding the MAP estimate of our posterior distribution of clean images:
 
 ```katex {evaluate: true}
 MAP: x^{*} = argmax_{x} p(x|\hat{x})
@@ -45,7 +45,7 @@ MAP: x^{*} = argmax_{x} p(x|\hat{x})\\
 = argmin_{x} E(x;\hat{x}) + R(x)
 ```
 where <inlineMath>E(x;\hat{x})</inlineMath> is the information entropy and <inlineMath>R(x)</inlineMath> is a regularizer term.  
-This approach exploits the fact that structure of a generator network are surjective mapping of <InlineMath>g:0 \to x</InlineMath>, hence the formula for optimization task <InlineMath>argmin_x E(x;\hat{x}) + R(x)</InlineMath> becomes <InlineMath>argmin_x E(g(0);\hat{x}) + R(g(0))</InlineMath>. Furthermore, if we select a good mapping <InlineMath>g</InlineMath>, but adjusting network hyperparameters, we could get rid of prior term and utilize a randomly initialized function as fixed input and learn from corrupted image the network parameters <InlineMath>argmin_\theta E(f_\theta(z); \hat{x})</InlineMath>. This parameterization network prefers naturally looking images over noise and descends more quickly in the optimization process, so the generator network provides a prior that corresponds to set of images that can be produced by the network with parameters optimized.
+This approach exploits the fact that structure of a generator network are surjective mapping of <InlineMath>g:\theta \to x</InlineMath>, hence the formula for optimization task <InlineMath>argmin_x E(x;\hat{x}) + R(x)</InlineMath> becomes <InlineMath>argmin_x E(g(\theta);\hat{x}) + R(g(\theta))</InlineMath>. Furthermore, if we select a good mapping <InlineMath>g</InlineMath>, but adjusting network hyperparameters, we could get rid of prior term and utilize a randomly initialized function as fixed input and learn from corrupted image the network parameters <InlineMath>argmin_\theta E(f_\theta(z); \hat{x})</InlineMath>. This parameterization network prefers naturally looking images over noise and descends more quickly in the optimization process, so the generator network provides a prior that corresponds to set of images that can be produced by the network with parameters optimized.
 
 
 ## Developing the Network from the paper
@@ -57,7 +57,7 @@ The main paper does not contain the structure of the network. Luckly, the author
   <figcaption>Figure 1 - Network Structure</figcaption>
 </figure> 
 
-The supplementary material state that the downsampling procedure they used was done by the stride implementation of the convolution, but they also state that they got a similar result with average/max pooling and downsampling with Lanczos kernel. In out implementation we decided to use max pooling. The upsampling operation is dependent on the application, but in the possible upsampling operations are nearest and bilinear. 
+The supplementary material states that the downsampling procedure they used was done by the stride implementation of the convolution, but they also state that they got a similar result with average/max pooling and downsampling with Lanczos kernel. In our implementation we decided to use max pooling. The upsampling operation is dependent on the application, but the only used upsampling operations are nearest upsampling and bilinear upsampling. 
 Our implementation of <InlineMath>d_i</InlineMath> is the following where `channels_out` is <InlineMath>n_d[i]</InlineMath> and `kernel_size` is <InlineMath>k_d[i]</InlineMath>
 
 ```python  
@@ -117,7 +117,7 @@ class Up(nn.Module):
     def forward(self, x):
         return self.upsample(x)
 ```
-Because we are going are tackling the problem of image reconstruction, we are going to use the hyperparameters provided by the supplementary material for the image reconstruction problem which are the following:
+Because we are going to tackle the problem of image reconstruction, we are going to use the hyperparameters provided by the supplementary material for the image reconstruction problem which are the following:
 
 ```katex {evaluate: true}
 z \in \R^{32xWxH} \sim U(0,\frac{1}{10})\\
@@ -131,16 +131,16 @@ k_s = [1, 1, 1, 1, 1] \\
 \text{upsampling} = \text{bilinear}
 ```
 
-### Peculiarities From The Network Structure
-Firstly as you can see from Figure [1](#figure-1), the last operation from the network is the upsampling procedure. Because the upsampling procedure is either bilinear or nearest, the resulting image is blury regardless of the network input and the network weights.  
-Secondly another peculiarity is that in the case of image reconstruction, <InlineMath>n_s[5]=4</InlineMath>, which means that the number of filters and consequently the number of channels of the output image is <InlineMath>4</InlineMath>. The paper in the case of image reconstruction experiments with gray-scale images, therefore the output image should have <InlineMath>1</InlineMath> channel in total and not <InlineMath>4</InlineMath>.  
+### Peculiarities In The Network Structure
+Firstly as you can see from Figure [1](#figure-1), the last operation from the network is the upsampling procedure. Because the upsampling procedure is either bilinear or nearest, the resulting image is blurry regardless of the network input and the network weights.  
+Secondly in the case of image reconstruction, <InlineMath>n_s[5]=4</InlineMath>, which means that the number of filters and consequently the number of channels of the output image is <InlineMath>4</InlineMath>. The paper in the case of image reconstruction experiments with gray-scale images, therefore the output image should have <InlineMath>1</InlineMath> channel in total and not <InlineMath>4</InlineMath>.  
 Thirdly, because the last activation function is `Leaky ReLu` the range of possible  pixel values of the resulting image is <InlineMath>(-\infin,\infin)</InlineMath> instead of <InlineMath>[0, 1]</InlineMath>.  
-Fourthly, in the case of the hyperparameters provided for large hole inpainting <InlineMath>n_s = [0, 0, 0, 0, 0, 0] </InlineMath> and <InlineMath> k_s=
-[\text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}]</InlineMath> which means that skip connections are omitted. But given the structure shown in Figure [1](#figure-1) the only connection between the encoder and the decoder are the skip connections, which makes omitting of all the skip connections not possible.
+Fourthly, in the case of the hyperparameters provided for large hole inpainting where <InlineMath>n_s = [0, 0, 0, 0, 0, 0] </InlineMath> and <InlineMath> k_s=
+[\text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}]</InlineMath> which can be interpreted as skip connections being omitted. But given the structure shown in Figure [1](#figure-1) the only connection between the encoder and the decoder are the skip connections, which makes omitting all the skip connections not possible.
 
 ### Resolving The Peculiarities
 To solve the peculiarities, we added components from the original U-Net[[2]](#citation-2) architecture.  
-To make sure that the output image, is not blury, has the right amount of channels and has possible pixel values only within the range <InlineMath>[0, 1]</InlineMath> we added a convolutional layer  with a sigmoid activation function after the last upsampling in the same way it was done in the original U-Net architecture.  The implementation of the last layer is:
+To make sure that the output image, is not blurry, has the right amount of channels and has possible pixel values only within the range <InlineMath>[0, 1]</InlineMath> we added a convolutional layer  with a sigmoid activation function after the last upsampling in the same way it was done in the original U-Net architecture.  The implementation of the last layer is:
 
 ```python
 class OutConv(nn.Module):
@@ -267,8 +267,8 @@ class UNet(nn.Module):
 </collapse>
 
 ## Learning process
-As described in the paper,the loss function is <inlineMath>||f_\theta(z) - \hat{x}||^2</inlineMath>, Adam optimizer was used with learning rate <inlineMath>0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
-In the supplementary material, they described that the optimization process destabilizes for low values of the loss function and there after the loss function increases at consequent iterations of the optimization process. The approach described in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and to restore its weights to the values from the previouse iteration. We noticed that this approach does not prevent the optimization process from destabilizing afterward when the weights are restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever we restore the weights.  
+As described in the paper,the loss function is <inlineMath>||(f_\theta(z) - \hat{x}) \odot m||^2</inlineMath>, where <inlineMath>m_{ij}=0</inlineMath> if <inlineMath>\hat{x}\_{ij}</inlineMath> is a missing pixel <inlineMath>m\_{ij}=1</inlineMath> otherwise. Adam optimizer was used with learning rate <inlineMath>RL=0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
+In the supplementary material, they described that the optimization process destabilizes for low values of the loss function and there after the loss function increases at consequent iterations of the optimization process. The approach described in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and if it was the weights were restored to their value from the previouse iteration. We noticed that this approach does not prevent the optimization process from destabilizing after the weights were restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever the weights were restored.  
 In the following plot you can see the learning process and how the change in the learning rate stabilizes the optimization process.  
     
 **Image Selected** {selector}
@@ -285,7 +285,7 @@ In the following plot you can see the learning process and how the change in the
 | Deep Image Prior | 32.22   | 33.06 | 39.16 | 36.16 | 33.05   | 29.8  | 32.52  | 32.84  | 32.77 | 32.20 | 34.54   |
 
 
-As you can see from the table, we did not reach the performance from the main paper. This might be due to the wrong assumptions taken in the network architecture.
+As you can see from the table, we did not reach the performance from the main paper. This might be due to the wrong assumptions taken in the network architecture. Nevertheless the generated images seem realistic and they seem to confirm the hypothesis that the structure of the Convolutional Neural Network contains realistic looking prior knowledge.
 ### References
 
 <div id="citation-1"><strong>[1]</strong>: Ulyanov D, Vedaldi A, Lempitsky V. Deep image prior. InProceedings of  the IEEE Conference on Computer Vision and Pattern Recognition 2018 (pp. 9446-9454).</div>

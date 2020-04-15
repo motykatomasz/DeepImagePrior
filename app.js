@@ -98,8 +98,8 @@ new Docute({
               link: '/#structure-of-the-network'
             },
             {
-              title: 'Peculiarities From The Network Structure',
-              link: '/#peculiarities-from-the-network-structure'
+              title: 'Peculiarities in The Network Structure',
+              link: '/#peculiarities-in-the-network-structure'
             },
             {
               title: 'Resolving The Peculiarities',
