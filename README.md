@@ -40,7 +40,7 @@ Lets assume that our image <inlineMath>x</inlineMath> is under following process
 <inlineMath> x \Rightarrow Degradation \Rightarrow  \hat{x} \Rightarrow  Restoration \Rightarrow x^{*} </inlineMath>
 
 Our goal is to find <inlineMath> x^{*}</inlineMath>.
-We can do this by finding the MAP estimate of our posterior distribution of clean images:
+Assuming there is a probability distribution over the clean image space x and noisy image \hat{x}, we can do that by finding the MAP estimate of our posterior distribution of clean images:
 
 ```katex {evaluate: true}
 MAP: x^{*} = argmax_{x} p(x|\hat{x})
@@ -64,14 +64,14 @@ This approach exploits the fact that structure of a generator network are surjec
 
 ## Developing the Network from the paper
 ### Structure of The Network
-The main paper does not contain the structure of the network. Luckly, the authors provided supplementary material to the paper. In the supplementary material they describe the network and the hyper-parameters they used. In the supplementary material, they also provide a diagram with the structure of the network, as you can see in Figure [5](#figure-5), where <InlineMath>n_d[i]</InlineMath> and <InlineMath>k_d[i]</InlineMath> are respectively the number of filters and the kernel size of the convolutional layers of the downsampling connection <InlineMath>d_i</InlineMath>. In the same fashion <InlineMath>n_s[i]</InlineMath> and <InlineMath>k_s[i]</InlineMath> are respectively the number of filters and the kernel size of skip connection <InlineMath>s_i</InlineMath> and <InlineMath>n_u[i]</InlineMath> and <InlineMath>k_u[i]</InlineMath> are respectively the number of filters and the kernel size of upsampling connection <InlineMath>u_i</InlineMath>.
+The main paper does not contain the structure of the network. Luckly, the authors provided supplementary material to the paper. In the supplementary material they described the network and the hyper-parameters they used. In the supplementary material, they also provided a diagram with the structure of the network, as you can see in Figure [5](#figure-5), where <InlineMath>n_d[i]</InlineMath> and <InlineMath>k_d[i]</InlineMath> are respectively the number of filters and the kernel size of the convolutional layers of the downsampling connection <InlineMath>d_i</InlineMath>. In the same fashion <InlineMath>n_s[i]</InlineMath> and <InlineMath>k_s[i]</InlineMath> are respectively the number of filters and the kernel size of skip connection <InlineMath>s_i</InlineMath> and <InlineMath>n_u[i]</InlineMath> and <InlineMath>k_u[i]</InlineMath> are respectively the number of filters and the kernel size of upsampling connection <InlineMath>u_i</InlineMath>.
 
 <figure id="figure-5">
   <img src="./images/network_structure.png">
   <figcaption>Figure 5 - Network Structure</figcaption>
 </figure> 
 
-The supplementary material states that the downsampling procedure they used was done by the stride implementation of the convolution, but they also state that they got a similar result with average/max pooling and downsampling with Lanczos kernel. In our implementation we decided to use max pooling. The upsampling operation is dependent on the application, but the only used upsampling operations are nearest upsampling and bilinear upsampling. 
+The supplementary material states that the downsampling procedure they used was done by the stride implementation of the convolution, but it also states that the authors got a similar result with average/max pooling and downsampling with Lanczos kernel. In our implementation we decided to use max pooling. The upsampling operation is dependent on the application, but the only used upsampling operations are nearest upsampling and bilinear upsampling. 
 Our implementation of <InlineMath>d_i</InlineMath> is the following where `channels_out` is <InlineMath>n_d[i]</InlineMath> and `kernel_size` is <InlineMath>k_d[i]</InlineMath>
 
 ```python  
@@ -153,7 +153,7 @@ Fourthly, in the case of the hyperparameters provided for large hole inpainting 
 [\text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}, \text{NA}]</InlineMath> which can be interpreted as skip connections being omitted. But given the structure shown in Figure [5](#figure-5) the only connection between the encoder and the decoder are the skip connections, which makes omitting all the skip connections not possible.
 
 ### Resolving The Peculiarities
-To solve the peculiarities, we added components from the original U-Net[[2]](#citation-2) architecture.  
+To solve these peculiarities, we added components from the original U-Net[[2]](#citation-2) architecture.  
 To make sure that the output image, is not blurry, has the right amount of channels and has possible pixel values only within the range <InlineMath>[0, 1]</InlineMath> we added a convolutional layer  with a sigmoid activation function after the last upsampling in the same way it was done in the original U-Net architecture.  The implementation of the last layer is:
 
 ```python
@@ -282,7 +282,7 @@ class UNet(nn.Module):
 
 ## Learning process
 As described in the paper,the loss function is <inlineMath>||(f_\theta(z) - \hat{x}) \odot m||^2</inlineMath>, where <inlineMath>m_{ij}=0</inlineMath> if <inlineMath>\hat{x}\_{ij}</inlineMath> is a missing pixel and <inlineMath>m\_{ij}=1</inlineMath> if the value <inlineMath>\hat{x}\_{ij}</inlineMath> is known. Adam optimizer was used with learning rate <inlineMath>RL=0.0001</inlineMath> for <inlineMath>11000</inlineMath> iterations.  
-In the supplementary material, they described that the optimization process destabilizes for low values of the loss function and there after the loss function increases at consequent iterations of the optimization process. The approach described in the supplementary material to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and if it was the weights were restored to their value from the previouse iteration. We noticed that this approach does not prevent the optimization process from destabilizing after the weights were restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever the weights were restored.  
+In the supplementary material, the authors described that the optimization process destabilizes for low values of the loss function, and there after the loss function increases at consequent iterations of the optimization process. Their approach to remedy this problem was to check when the loss would be noticibly greater then its value in the previouse iteration and restore its weights to the values from the previouse iteration. We noticed that this approach does not prevent the optimization process from destabilizing after the weights were restored, therefore we also diminished the learning rate to <inlineMath>LR' = 0.9LR</inlineMath> whenever the weights were restored.  
 In the following plot you can see the learning process and how the change in the learning rate stabilizes the optimization process.  
     
 **Image Selected:** {selector}
