@@ -146,7 +146,7 @@ k_s = [1, 1, 1, 1, 1] \\
 ```
 
 ### Peculiarities In The Network Structure
-Firstly as you can see from Figure [1](#figure-1), the last operation from the network is the upsampling procedure. Because the upsampling procedure is either bilinear or nearest, the resulting image is blurry regardless of the network input and the network weights.  
+Firstly as you can see from Figure [5](#figure-5), the last operation from the network is the upsampling procedure. Because the upsampling procedure is either bilinear or nearest, the resulting image is blurry regardless of the network input and the network weights.  
 Secondly in the case of image reconstruction, <InlineMath>n_s[5]=4</InlineMath>, which means that the number of filters and consequently the number of channels of the output image is <InlineMath>4</InlineMath>. The paper in the case of image reconstruction experiments with gray-scale images, therefore the output image should have <InlineMath>1</InlineMath> channel in total and not <InlineMath>4</InlineMath>.  
 Thirdly, because the last activation function is `Leaky ReLu` the range of possible  pixel values of the resulting image is <InlineMath>(-\infin,\infin)</InlineMath> instead of <InlineMath>[0, 1]</InlineMath>.  
 Fourthly, in the case of the hyperparameters provided for large hole inpainting where <InlineMath>n_s = [0, 0, 0, 0, 0, 0] </InlineMath> and <InlineMath> k_s=
