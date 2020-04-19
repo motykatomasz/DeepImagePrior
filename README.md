@@ -1,7 +1,7 @@
 # Deep Image Prior <br> Reproducibility Project
 
 ## Introduction
-This blog post is for the reproducibility project for the TU Delft Deep Learning course. What we are going to attempt in this blog post is to reproduce the experiments and the results from the paper  "Deep Image Prior"[[1]](#citation-1) without running or consulting its available code.
+"Deep Image Prior"[[1]](#citation-1) works upon the problem of involving large number of training samples by a novel idea to utilise Network structure parameters to train a model. With this project for TUDelft Deep Learning Course, we are trying to reproduce results from the paper without any consultation of the paper's available code so that we get a better understanding of their approach by reproducing their work independently.
 
 ## Problems tackled by the paper
 The problems tackled by the paper are problem of image restoration. Some example of image restoration tasks are for example:
