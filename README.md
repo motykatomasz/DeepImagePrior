@@ -7,21 +7,21 @@ This blog post is for the reproducibility project for the TU Delft Deep Learning
 The problems tackled by the paper are problem of image restoration. Some example of image restoration tasks are for example:
 * Image denoising Figure [1](#figure-1) <figure id="figure-1">
 <img src="https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_02.png">
-  <figcaption>Figure 1 - Example of image denoising</figcaption>
+  <figcaption>Figure 1 - Example of image denoising given by the original author of the Deep Image Prior paper.</figcaption>
 </figure> 
 * Image super-resolution Figure [2](#figure-2) <figure id="figure-2">
 <img src="https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_01.png">
-  <figcaption>Figure 2 - Example of super-resolution</figcaption>
+  <figcaption>Figure 2 - Example of super-resolution given by the original author of the Deep Image Prior paper.</figcaption>
 </figure> 
 * Image inpainting Figure [3](#figure-3) <figure id="figure-3">
 <img src="https://dmitryulyanov.github.io/assets/deep-image-prior/teaser/cropped_09.png">
-  <figcaption>Figure 3 - Example of image inpainting</figcaption>
+  <figcaption>Figure 3 - Example of image inpainting given by the original author of the Deep Image Prior paper.</figcaption>
 </figure> 
 
 The problem that we will focus on in this blog post is a subset of image inpainting which the paper refers to as image reconstruction. The task consists on, given an image <inlineMath>\hat{x}</inlineMath> and a mask <inlineMath>m</inlineMath> where <inlineMath>m\_{ij} \sim Bernoulli(p)</inlineMath> and given that <inlineMath>\hat{x} = m \odot x</inlineMath>, estimate <inlineMath>x</inlineMath>. The main paper performed tests mainly with <inlineMath>p=0.5</inlineMath>. For a more intuitive formulation of the problem, you can check Figure [4](#figure-4), where certain pixel values are missing and what we want to do is reconstruct the entire image.
 <figure id="figure-4">
   <img src="./images/restore.png">
-  <figcaption>Figure 4 - Example of image reconstruction</figcaption>
+  <figcaption>Figure 4 - Example of image reconstruction given by the original author of the Deep Image Prior paper.</figcaption>
 </figure> 
 
 ## What is Deep Image Prior
