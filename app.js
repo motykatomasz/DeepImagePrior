@@ -71,6 +71,10 @@ new Docute({
       {
         title: 'Authors',
         link: '/AUTHORS'
+      },
+      {
+        title: 'Other reproductions',
+        link: 'https://reproducedpapers.org/'
       }
     ],
     sidebar: [
